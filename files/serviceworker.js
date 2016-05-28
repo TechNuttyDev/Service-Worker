@@ -5,10 +5,10 @@ var theme_path = ''; //URL path for your assets
 var offlineFundamentals = [
 	'/',
   theme_path + 'library/css/style.css',
-  //Add cfundamental file paths here
+  //Add fundamental file paths here
 ];
 
-//Add core website files to cache during serviceworker installation
+//Install offlineFundamentals during serviceworker installation
 var updateStaticCache = function() {
 	return caches.open(version + 'fundamentals').then(function(cache) {
 		return Promise.all(offlineFundamentals.map(function(value) {
@@ -26,7 +26,7 @@ var updateStaticCache = function() {
 	})
 };
 
-//Clear caches with a different version number
+//Clear cache if version number is different
 var clearOldCaches = function() {
 console.log('Clearing old caches');
 	return caches.keys().then(function(keys) {
@@ -43,8 +43,7 @@ console.log('Clearing old caches');
 }
 
 /*
-	limits the cache
-	If cache has more than maxItems then it removes the first item in the cache
+	limits the cache to set amount of maxItems
 */
 var limitCache = function(cache, maxItems) {
 	cache.keys().then(function(items) {
@@ -56,8 +55,7 @@ var limitCache = function(cache, maxItems) {
 
 
 /*
-	trims the cache
-	If cache has more than maxItems then it removes the excess items starting from the beginning
+	trims the cache if maxItems is exceeded
 */
 var trimCache = function (cacheName, maxItems) {
 console.log('Trimming caches');
@@ -74,7 +72,7 @@ console.log('Trimming caches');
 };
 
 
-//When the service worker is first added to a computer
+//Install event
 self.addEventListener("install", function(event) {
 	event.waitUntil(updateStaticCache()
 				.then(function() {
@@ -86,7 +84,7 @@ self.addEventListener("install", function(event) {
 self.addEventListener("message", function(event) {
 	var data = event.data;
 
-	//Send this command whenever many files are downloaded (ex: a page load)
+	//If too many files are downloaded
 	if (data.command == "trimCache") {
 		trimCache(version + "pages", 25);
 		trimCache(version + "images", 30);
@@ -94,7 +92,7 @@ self.addEventListener("message", function(event) {
 	}
 });
 
-//Service worker handles networking
+//Networking script
 self.addEventListener("fetch", function(event) {
 
 	//Fetch from network and cache
@@ -131,23 +129,23 @@ self.addEventListener("fetch", function(event) {
 		}
 	}
 
-	//This service worker won't touch the admin area and preview pages
+	//Disallow preview and admin pages
 	if (event.request.url.match(/wp-admin/) || event.request.url.match(/preview=true/)) {
 		return;
 	}
 
-	//This service worker won't touch non-get requests
+	//Disallow non-get
 	if (event.request.method != 'GET') {
 		return;
 	}
 
-	//For HTML requests, look for file in network, then cache if network fails.
+	//Error HTML
 	if (event.request.headers.get('Accept').indexOf('text/html') != -1) {
 					event.respondWith(fetch(event.request).then(fetchFromNetwork, fallback));
 		return;
 			}
 
-	//For non-HTML requests, look for file in cache, then network if no cache exists.
+	//Error non-HTML
 	event.respondWith(
 		caches.match(event.request).then(function(cached) {
 			return cached || fetch(event.request).then(fetchFromNetwork, fallback);
