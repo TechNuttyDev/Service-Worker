@@ -1,5 +1,5 @@
 # Service Worker Sample - Built for Wordpress
-I built this service worker for our Wordpress site TechNutty.
+I built this service worker for our Wordpress site TechNutty (It's a little different over there as we use OneSignal to handle our push notifications).
 
 This is just a sample of how you could implement Service Worker into your site, you would need to change aspects of it to work with your own site.
 
