@@ -1,10 +1,11 @@
-var version = 'v1:'; //Version number for invalididating cache
+var version = 'v1.0.10'; //Version number for invalididating cache
 
 var theme_path = ''; //URL path for your assets
 
 var offlineFundamentals = [
 	'/',
-  theme_path + 'library/css/style.css',
+	'/offline',
+	'https://technutty.co.uk/wp-content/themes/TechNutty5-5/library/css/stylesheet.shorthand.min.css'
   //Add fundamental file paths here
 ];
 
@@ -71,9 +72,8 @@ console.log('Trimming caches');
 				});
 };
 
-
 //Install event
-self.addEventListener("install", function(event) {
+this.addEventListener('install', function oninstallHandler(event) {
 	event.waitUntil(updateStaticCache()
 				.then(function() {
 					return self.skipWaiting();
@@ -81,7 +81,7 @@ self.addEventListener("install", function(event) {
 			);
 })
 
-self.addEventListener("message", function(event) {
+this.addEventListener("message", function onmessageHandler(event) {
 	var data = event.data;
 
 	//If too many files are downloaded
@@ -93,7 +93,7 @@ self.addEventListener("message", function(event) {
 });
 
 //Networking script
-self.addEventListener("fetch", function(event) {
+this.addEventListener('fetch', function onfetchHandler(event) {
 
 	//Fetch from network and cache
 	var fetchFromNetwork = function(response) {
@@ -154,7 +154,7 @@ self.addEventListener("fetch", function(event) {
 });
 
 //After the install event
-self.addEventListener("activate", function(event) {
+this.addEventListener('activate', function onactivateHandler(event) {
 	event.waitUntil(clearOldCaches()
 				.then(function() {
 				console.log('Claiming old Service Worker');
