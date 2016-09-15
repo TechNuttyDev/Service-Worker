@@ -123,7 +123,7 @@ this.addEventListener('fetch', function onfetchHandler(event) {
 	var fallback = function() {
 		if (event.request.headers.get('Accept').indexOf('text/html') != -1) {
 			return caches.match(event.request).then(function (response) {
-			console.log('Fetch from network failed, responded with:', response);
+			    console.log('Fetch from network failed, responded with:', response);
 				return response || caches.match('/offline');
 			})
 		}
@@ -157,7 +157,7 @@ this.addEventListener('fetch', function onfetchHandler(event) {
 this.addEventListener('activate', function onactivateHandler(event) {
 	event.waitUntil(clearOldCaches()
 				.then(function() {
-				console.log('Claiming old Service Worker');
+				    console.log('Claiming old Service Worker');
 					return self.clients.claim();
 				})
 			);
