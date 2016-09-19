@@ -146,7 +146,7 @@ self.toolbox.router.get('pagespeed_static/*', self.toolbox.cacheFirst, {
 
 // Articles router
 
-global.toolbox.router.get('/articles/(.*)', function(request, values, options) { 
+global.toolbox.router.get('/articles/*', function(request, values, options) { 
   return global.toolbox.networkFirst(request, values, options).catch(function(error) {
     if (request.method === 'GET' && request.headers.get('accept').includes('text/html')) {
       return toolbox.cacheOnly(new Request('offline'), values, options);
@@ -157,7 +157,7 @@ global.toolbox.router.get('/articles/(.*)', function(request, values, options) {
 
 // Topics router
 
-global.toolbox.router.get('/topics/(.*)', function(request, values, options) { 
+global.toolbox.router.get('/topics/*', function(request, values, options) { 
   return global.toolbox.networkFirst(request, values, options).catch(function(error) {
     if (request.method === 'GET' && request.headers.get('accept').includes('text/html')) {
       return toolbox.cacheOnly(new Request('offline'), values, options);
@@ -187,7 +187,7 @@ self.toolbox.router.get('/wp-content/themes/TechNutty5-5/library/js/(.*)', self.
 
 // Main Assets Includes JS router
 
-self.toolbox.router.get('/wp-includes/js/(.*)', self.toolbox.cacheFirst, {  
+self.toolbox.router.get('/wp-includes/js/(.*js)', self.toolbox.cacheFirst, {  
   cache: {
     name: 'staticMainAssetsCache',
     maxEntries: 50
@@ -196,7 +196,7 @@ self.toolbox.router.get('/wp-includes/js/(.*)', self.toolbox.cacheFirst, {
 
 // WP Plugins CSS Router
 
-self.toolbox.router.get('/wp-content/plugins/(.css)', self.toolbox.cacheFirst, {  
+self.toolbox.router.get('/wp-content/plugins/(*.css)', self.toolbox.cacheFirst, {  
     cache: {
       name: 'content-css-js-cache-v1',
       maxEntries: 50
@@ -206,7 +206,7 @@ self.toolbox.router.get('/wp-content/plugins/(.css)', self.toolbox.cacheFirst, {
 
 // WP Plugins JS Router
 
-self.toolbox.router.get('/wp-content/plugins/(.js)', self.toolbox.cacheFirst, {  
+self.toolbox.router.get('/wp-content/plugins/(*.js)', self.toolbox.cacheFirst, {  
     cache: {
       name: 'content-css-js-cache-v1',
       maxEntries: 50
